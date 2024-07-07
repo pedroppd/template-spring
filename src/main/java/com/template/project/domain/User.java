@@ -9,25 +9,12 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private String verificationCode;
-    private boolean enabled;
 
-    public User() {
-
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public String getVerificationCode() {
-        return verificationCode;
-    }
+    public User() {}
 
     public String getPassword() {
         return password;
     }
-
 
     public String getEmail() {
         return email;
