@@ -23,12 +23,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(SecurityConfiguration.class);
-
     @Autowired
     private AuthenticationTokenFilter authenticationTokenFilter;
 
-    private static final String[] POST_REQUEST_ENABLED = {"/auth/**", "auth", "/auth/", "/auth"};
+    private static final String[] POST_REQUEST_ENABLED = {"/register/**", "/auth/**"};
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {

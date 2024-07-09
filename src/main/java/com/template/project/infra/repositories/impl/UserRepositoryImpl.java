@@ -1,6 +1,5 @@
 package com.template.project.infra.repositories.impl;
 
-import com.template.project.domain.User;
 import com.template.project.infra.entities.UserEntity;
 import com.template.project.infra.repositories.ports.SpringUserRepository;
 
@@ -22,6 +21,6 @@ public class UserRepositoryImpl {
     }
 
     public UserEntity save(UserEntity userEntity) {
-        return springUserRepository.save(userEntity).orElse(null);
+        return springUserRepository.save(userEntity);
     }
 }

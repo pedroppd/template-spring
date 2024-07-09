@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.UUID;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 @Service
 public class Token {
 
@@ -28,6 +30,7 @@ public class Token {
 
     public boolean isValidToken(String token) {
         try {
+            if(isEmpty(token)) return false;
             Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
             return true;
         }catch (Exception ex) {

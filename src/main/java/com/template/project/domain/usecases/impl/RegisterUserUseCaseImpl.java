@@ -21,12 +21,12 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCasePort {
     @Override
     public UserEntity execute(Input input) {
         var user = userRepository.findByEmail(input.email());
-        if (!isNull(user)) {
+        if (isNull(user)) {
             var newUser = new UserEntity();
             newUser.setPassword(passwordEncoder.encode(input.password()));
             newUser.setEmail(input.email());
             newUser.setUserName(input.userName());
-            this.userRepository.save(newUser);
+            return this.userRepository.save(newUser);
         }
         throw new RuntimeException(format("User %s already exists !", input.email()));
     }

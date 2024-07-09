@@ -6,6 +6,7 @@ import com.template.project.domain.usecases.impl.RegisterUserUseCaseImpl;
 import com.template.project.domain.usecases.ports.RegisterUserUseCasePort;
 import com.template.project.infra.repositories.impl.UserRepositoryImpl;
 import com.template.project.infra.shared.Token;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping
+@RequiredArgsConstructor
 public class AuthenticationGateway {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationGateway.class);
@@ -38,10 +40,10 @@ public class AuthenticationGateway {
     @Autowired
     private Token token;
 
-    private RegisterUserUseCaseImpl registerUserUseCaseImpl;
+    private final RegisterUserUseCaseImpl registerUserUseCaseImpl;
 
 
-    @PostMapping()
+    @PostMapping("/auth")
     public ResponseEntity authenticate(@RequestBody AuthRequestDTO authForm) {
         try {
             //var auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authForm.email(), authForm.password()));
@@ -62,8 +64,7 @@ public class AuthenticationGateway {
             return ResponseEntity.created(uri).body(user);
         }catch (Exception ex) {
             log.error("Error to try save user", ex);
-            ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
-
     }
 }
