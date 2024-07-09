@@ -3,6 +3,8 @@ package com.template.project.infra.repositories.impl;
 import com.template.project.infra.entities.UserEntity;
 import com.template.project.infra.repositories.ports.SpringUserRepository;
 
+import java.util.Optional;
+
 
 public class UserRepositoryImpl {
 
@@ -12,8 +14,8 @@ public class UserRepositoryImpl {
         this.springUserRepository = springUserRepository;
     }
 
-    public UserEntity findByEmail(String email) {
-        return springUserRepository.findByEmail(email).orElse(null);
+    public Optional<UserEntity> findByEmail(String email) {
+        return springUserRepository.findByEmail(email);
     }
 
     public UserEntity findByUuid(String uuid) {

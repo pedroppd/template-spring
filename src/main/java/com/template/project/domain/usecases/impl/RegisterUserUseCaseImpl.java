@@ -21,7 +21,7 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCasePort {
     @Override
     public UserEntity execute(Input input) {
         var user = userRepository.findByEmail(input.email());
-        if (isNull(user)) {
+        if (user.isEmpty()) {
             var newUser = new UserEntity();
             newUser.setPassword(passwordEncoder.encode(input.password()));
             newUser.setEmail(input.email());

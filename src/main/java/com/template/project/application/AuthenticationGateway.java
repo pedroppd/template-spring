@@ -2,6 +2,7 @@ package com.template.project.application;
 
 import com.template.project.application.dtos.request.AuthRequestDTO;
 import com.template.project.application.dtos.request.RegisterRequestDTO;
+import com.template.project.application.dtos.response.AuthenticationResponseDTO;
 import com.template.project.domain.usecases.impl.RegisterUserUseCaseImpl;
 import com.template.project.domain.usecases.ports.RegisterUserUseCasePort;
 import com.template.project.infra.repositories.impl.UserRepositoryImpl;
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +34,8 @@ public class AuthenticationGateway {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationGateway.class);
 
-//    @Autowired
-//    private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserRepositoryImpl userRepository;
@@ -46,11 +49,10 @@ public class AuthenticationGateway {
     @PostMapping("/auth")
     public ResponseEntity authenticate(@RequestBody AuthRequestDTO authForm) {
         try {
-            //var auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authForm.email(), authForm.password()));
-            //var tokenGenerated = token.generateTokenJwt(auth);
-            //return ResponseEntity.ok().body(new AuthenticationResponseDTO(tokenGenerated, "Bearer"));
-           return ResponseEntity.ok().body(Map.of("name", "pedro"));
-        } catch(AuthenticationException ex) {
+            var auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authForm.email(), authForm.password()));
+            var tokenGenerated = token.generateTokenJwt(auth);
+            return ResponseEntity.ok().body(new AuthenticationResponseDTO(tokenGenerated, "Bearer"));
+        } catch (AuthenticationException ex) {
             log.error("Error to try authenticate: {}", ex.getMessage(), ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -62,7 +64,7 @@ public class AuthenticationGateway {
             var user = registerUserUseCaseImpl.execute(new RegisterUserUseCasePort.Input(body.name(), body.email(), body.password()));
             var uri = uriBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
             return ResponseEntity.created(uri).body(user);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             log.error("Error to try save user", ex);
             return ResponseEntity.badRequest().build();
         }
