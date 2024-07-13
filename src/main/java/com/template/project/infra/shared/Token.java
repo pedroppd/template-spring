@@ -17,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Date;
 
+import static com.template.project.infra.shared.JSON.parse;
+
 @Service
 public class Token {
 
@@ -49,7 +51,7 @@ public class Token {
 
     public String generateTokenJwt(Authentication authentication) {
         try {
-            var user = (UserEntity) authentication.getPrincipal();
+            var user = parse(authentication.getPrincipal(), UserEntity.class);
             var today = new Date();
             var expirationDate = new Date(today.getTime() + Long.parseLong(expiration));
             String json = new ObjectMapper().writer().writeValueAsString(user);
@@ -77,11 +79,9 @@ public class Token {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-            var body = jws.getBody().getSubject();
-            var user = new ObjectMapper()
-                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                    .readValue(body, UserEntity.class);
-            return user.getId();
+            String body = jws.getBody().getSubject();
+            var user = parse(body, UserEntity.class);
+            return user.getEmail();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             return null;

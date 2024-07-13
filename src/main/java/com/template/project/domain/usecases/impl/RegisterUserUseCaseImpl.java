@@ -25,7 +25,7 @@ public class RegisterUserUseCaseImpl implements RegisterUserUseCasePort {
             var newUser = new UserEntity();
             newUser.setPassword(passwordEncoder.encode(input.password()));
             newUser.setEmail(input.email());
-            newUser.setUserName(input.userName());
+            newUser.setUsername(input.userName());
             return this.userRepository.save(newUser);
         }
         throw new RuntimeException(format("User %s already exists !", input.email()));
