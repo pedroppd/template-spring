@@ -33,8 +33,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, POST_REQUEST_ENABLED).permitAll()
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers(HttpMethod.POST, POST_REQUEST_ENABLED).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);

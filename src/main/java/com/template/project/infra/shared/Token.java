@@ -1,5 +1,6 @@
 package com.template.project.infra.shared;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.template.project.infra.entities.UserEntity;
 import io.jsonwebtoken.*;
@@ -48,7 +49,7 @@ public class Token {
 
     public String generateTokenJwt(Authentication authentication) {
         try {
-            var user = (User) authentication.getPrincipal();
+            var user = (UserEntity) authentication.getPrincipal();
             var today = new Date();
             var expirationDate = new Date(today.getTime() + Long.parseLong(expiration));
             String json = new ObjectMapper().writer().writeValueAsString(user);
@@ -77,7 +78,9 @@ public class Token {
                     .build()
                     .parseClaimsJws(token);
             var body = jws.getBody().getSubject();
-            var user = new ObjectMapper().readValue(body, UserEntity.class);
+            var user = new ObjectMapper()
+                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    .readValue(body, UserEntity.class);
             return user.getId();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
